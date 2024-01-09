@@ -44,11 +44,23 @@
     <string name="pier_39_hint">Go to a pier popular for tourist attractions, carnival games, fresh fish, and delicious sourdough bread!</string>
     <string name="union_square_hint">Go to a square named after Civil War rallies held there, but now known for its amazing shopping!</string>
 
+    <string name="a_hint">Иди ко входу на мехмат</string>
+    <string name="c_hint">Иди к углу мехмата</string>
+    <string name="e_hint">Иди к парковке</string>
+    <string name="i_hint">Иди к парковке для велосипедов</string>
+    <string name="j_hint">Иди к курилке</string>
+
     <!-- Geofence Locations -->
     <string name="golden_gate_bridge_location">at the Golden Gate bridge</string>
     <string name="ferry_building_location">in the Ferry Building</string>
     <string name="pier_39_location">at Pier 39</string>
     <string name="union_square_location">in Union Square</string>
+
+    <string name="a_location">A.  Вход на мехмат</string>
+    <string name="c_location">C.  Угол мехмата</string>
+    <string name="e_location">E.  Парковка</string>
+    <string name="i_location">I.  Велосипеды</string>
+    <string name="j_location">J.  Курилка</string>
 
     <!-- Error strings -->
     <string name="geofence_not_available">Geofence service is not available now</string>

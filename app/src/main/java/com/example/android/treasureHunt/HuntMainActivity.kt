@@ -41,6 +41,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
+import java.util.concurrent.TimeUnit
 
 /**
  * The Treasure Hunt app is a single-player game based on geofences.
@@ -277,6 +278,7 @@ class HuntMainActivity : AppCompatActivity() {
      * is now "active."
      */
     private fun addGeofenceForClue() {
+        // TODO: Step 10 add in code to add the geofence
         if (viewModel.geofenceIsActive()) return
         val currentGeofenceIndex = viewModel.nextGeofenceIndex()
         if(currentGeofenceIndex >= GeofencingConstants.NUM_LANDMARKS) {
@@ -286,63 +288,42 @@ class HuntMainActivity : AppCompatActivity() {
         }
         val currentGeofenceData = GeofencingConstants.LANDMARK_DATA[currentGeofenceIndex]
 
-        // Build the Geofence Object
         val geofence = Geofence.Builder()
-            // Set the request ID, string to identify the geofence.
             .setRequestId(currentGeofenceData.id)
-            // Set the circular region of this geofence.
             .setCircularRegion(currentGeofenceData.latLong.latitude,
                 currentGeofenceData.latLong.longitude,
                 GeofencingConstants.GEOFENCE_RADIUS_IN_METERS
             )
-            // Set the expiration duration of the geofence. This geofence gets
-            // automatically removed after this period of time.
-            .setExpirationDuration(GeofencingConstants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-            // Set the transition types of interest. Alerts are only generated for these
-            // transition. We track entry and exit transitions in this sample.
+            .setExpirationDuration(TimeUnit.HOURS.toMillis(1))
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
             .build()
 
-        // Build the geofence request
         val geofencingRequest = GeofencingRequest.Builder()
-            // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
-            // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
-            // is already inside that geofence.
             .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-
-            // Add the geofences to be monitored by geofencing service.
             .addGeofence(geofence)
             .build()
 
-        // First, remove any existing geofences that use our pending intent
         geofencingClient.removeGeofences(geofencePendingIntent)?.run {
-            // Regardless of success/failure of the removal, add the new geofence
             addOnCompleteListener {
-                // Add the new geofence request with the new geofence
                 geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
                     addOnSuccessListener {
-                        // Geofences added.
                         Toast.makeText(this@HuntMainActivity, R.string.geofences_added,
                             Toast.LENGTH_SHORT)
                             .show()
                         Log.e("Add Geofence", geofence.requestId)
-                        // Tell the viewmodel that we've reached the end of the game and
-                        // activated the last "geofence" --- by removing the Geofence.
                         viewModel.geofenceActivated()
                     }
                     addOnFailureListener {
-                        // Failed to add geofences.
                         Toast.makeText(this@HuntMainActivity, R.string.geofences_not_added,
                             Toast.LENGTH_SHORT).show()
                         if ((it.message != null)) {
-                            Log.w(TAG, it.message)
+                            Log.w(TAG, it.message!!)
                         }
                     }
                 }
             }
         }
     }
-
     /**
      * Removes geofences. This method should be called after the user has granted the location
      * permission.
